@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import FirstSection from "../components/OnBoarding/Section/FistSection"
+import FirstSection from "../components/OnBoarding/Section/FirstSection"
 import SecondSection from "../components/OnBoarding/Section/SecondSection"
 
 const Main = () => {
