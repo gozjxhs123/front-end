@@ -41,7 +41,6 @@ const FirstSectionWrapper = styled.div`
     height: calc(90% - 6.2vh);
     background: linear-gradient(180deg, rgba(99, 232, 135, 0) 0%, #14dd4c 100%);
     flex-direction: row;
-
     align-items: center;
 `
 
@@ -70,6 +69,7 @@ const StartButton = styled.button`
     padding: 0;
     border-radius: 50px;
     border: none;
+    font-size: 18px;
     background-color: #ff7283;
 `
 
@@ -95,4 +95,5 @@ const Text = styled.span`
     width: 100%;
     display: flex;
     flex-direction: column;
+    height: 200px;
 `
