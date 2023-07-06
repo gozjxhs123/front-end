@@ -11,44 +11,11 @@ import { toast } from "react-hot-toast"
 const Live = () => {
     const webcamRef = useRef(null)
     const [url, setURL] = useState("")
+    const [img, setImg] = useState("")
     const [value, setValue] = useState(1)
     const [log, setLog] = useState([])
 
     const navigate = useNavigate()
-
-    const handleKeyPress = event => {
-        if (event.key === "k" || event.key === "K") {
-            setTimeout(() => {
-                console.log("5초 뒤 K")
-                const fetchPhone = () =>
-                    phoneLoad.get("/record").then(({ data }) => {
-                        const fetch = () =>
-                            axios.post(
-                                `http://localhost:8000/fall?phone=${data.data.userPhone}`,
-                            )
-                        fetch()
-                    })
-                fetchPhone()
-                const now = new Date()
-                const year = now.getFullYear()
-                const month = now.getMonth() + 1
-                const date = now.getDate()
-                const hour = now.getHours()
-                const minutes = now.getMinutes()
-                toast("사람이 쓰러졌습니다", {
-                    duration: 2000,
-                })
-                setLog(prevLog => [
-                    ...prevLog,
-                    {
-                        id: prevLog.length + 1,
-                        data: year + "/" + month + "/" + date,
-                        time: hour + "/" + minutes,
-                    },
-                ])
-            }, 100)
-        }
-    }
 
     useEffect(() => {
         console.log(log)
@@ -60,19 +27,66 @@ const Live = () => {
         }
     }, [])
 
-    useEffect(() => {
-        window.addEventListener("keydown", handleKeyPress)
-
-        return () => {
-            window.removeEventListener("keydown", handleKeyPress)
-        }
-    }, [])
-
     const capture = () => {
         console.log(1)
         setValue(e => e + 1)
         const imgsrc = webcamRef.current.getScreenshot()
-        console.log(imgsrc)
+        setImg(imgsrc)
+        convertImageToPng(img)
+    }
+
+    const convertImageToPng = imageSrc => {
+        const imageDataBlob = dataURItoBlob(imageSrc)
+        const formData = new FormData()
+
+        formData.append("file", imageDataBlob)
+        const fetchPhone = () =>
+            phoneLoad.get("/record").then(({ data }) => {
+                const fetch = () =>
+                    axios
+                        .post(
+                            `http://localhost:8000/fall?phone=${data.data.userPhone}`,
+                            formData,
+                        )
+                        .then(e => {
+                            if (e) {
+                                const now = new Date()
+                                const year = now.getFullYear()
+                                const month = now.getMonth() + 1
+                                const date = now.getDate()
+                                const hour = now.getHours()
+                                const minutes = now.getMinutes()
+                                toast("사람이 쓰러졌습니다", {
+                                    duration: 2000,
+                                })
+                                setLog(prevLog => [
+                                    ...prevLog,
+                                    {
+                                        id: prevLog.length + 1,
+                                        data: year + "/" + month + "/" + date,
+                                        time: hour + "/" + minutes,
+                                    },
+                                ])
+                            } else {
+                                return null
+                            }
+                        })
+                fetch()
+            })
+        fetchPhone()
+    }
+
+    const dataURItoBlob = dataURI => {
+        const byteString = atob(dataURI.split(",")[1])
+        const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0]
+        const ab = new ArrayBuffer(byteString.length)
+        const ia = new Uint8Array(ab)
+
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i)
+        }
+
+        return new Blob([ab], { type: mimeString })
     }
 
     useEffect(() => {
