@@ -1,12 +1,13 @@
 import styled from "styled-components"
 import { Link } from "react-router-dom"
 import CAI from "../../../assets/CAI.png"
+import Cookies from "js-cookie"
 
 const FirstSection = () => {
     return (
         <FirstSectionWrapper>
             <LeftFirstSection>
-                <Title>Ai로 당신의 삶을 안전하게</Title>
+                <Title>AI로 당신의 삶을 안전하게</Title>
                 <Text>
                     <div>
                         '여러분의 안전을 지키는 새로운 차원을 경험해보세요.
@@ -20,7 +21,7 @@ const FirstSection = () => {
                 </Text>
 
                 <LocateButton>
-                    <Link to="/Login">
+                    <Link to={Cookies.get("accessToken") ? "/live" : "/login"}>
                         <StartButton>시작하기</StartButton>
                     </Link>
                 </LocateButton>

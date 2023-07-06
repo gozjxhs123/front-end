@@ -2,25 +2,38 @@ import GroupLogo1 from "../assets/GroupLogo1.svg"
 import styled from "styled-components"
 import { Link } from "react-router-dom"
 import useInput from "../hooks/useInput"
-import { useEffect } from "react"
+import toast from "react-hot-toast"
+import { useLoginMutation } from "../apis/account"
+import Header from "../components/header/Header"
 
 const Login = () => {
     const [id, setId, onChangeId] = useInput("")
     const [password, setPassword, onChangePassword] = useInput("")
+    const [phone, setName, onChangePhone] = useInput("")
 
-    useEffect(() => {
-        console.log(id)
-        console.log(password)
-    }, [id, password])
+    const { mutate: loginMutate } = useLoginMutation()
+
+    const onLogin = () => {
+        loginMutate({
+            userStrID: id,
+            userPhone: phone,
+            userPW: password,
+        })
+    }
 
     return (
         <LoginContainer>
             <LoginWrapper>
+                <Header />
                 <ImageContainer>
                     <Image src={GroupLogo1} />
                 </ImageContainer>
                 <InputContainer>
                     <TitleWrapper>Sign in to Falltect</TitleWrapper>
+                    <InputWrapper>
+                        <Label>Phone</Label>
+                        <Input value={phone} onChange={onChangePhone}></Input>
+                    </InputWrapper>
                     <InputWrapper>
                         <Label>ID</Label>
                         <Input type="text" value={id} onChange={onChangeId} />
@@ -34,7 +47,13 @@ const Login = () => {
                         />
                     </InputWrapper>
                     <ButtonWrapper>
-                        <LoginButton>
+                        <LoginButton
+                            onClick={
+                                id && password && phone
+                                    ? onLogin
+                                    : () => toast.error("모두 입력해주세요")
+                            }
+                        >
                             Sign in
                         </LoginButton>
                     </ButtonWrapper>

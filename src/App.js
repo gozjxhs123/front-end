@@ -3,6 +3,7 @@ import Main from "./page/Main"
 import Login from "./page/Login"
 import Sign from "./page/Sign"
 import Live from "./page/Live"
+import { Toaster } from "react-hot-toast"
 
 const App = () => {
     return (
@@ -13,6 +14,7 @@ const App = () => {
                 <Route path="/sign" element={<Sign />} />
                 <Route path="/live" element={<Live />} />
             </Routes>
+            <Toaster position="top-right" reverseOrder={false} />
         </BrowserRouter>
     )
 }

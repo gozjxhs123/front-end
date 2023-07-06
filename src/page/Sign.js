@@ -1,29 +1,79 @@
 import styled from "styled-components"
 import GroupLogo2 from "../assets/GroupLogo2.svg"
+import { useSignupMutation } from "../apis/account"
+import useInput from "../hooks/useInput"
+import { useEffect } from "react"
+import { Link } from "react-router-dom"
+import toast from "react-hot-toast"
+import Header from "../components/header/Header"
 
 const Sign = () => {
+    const [phone, setPhone, onChangePhone] = useInput("")
+    const [id, setId, onChangeId] = useInput("")
+    const [password, setPassword, onChangePassword] = useInput("")
+
+    const { mutate: SignMutate } = useSignupMutation()
+
+    const onSignup = () => {
+        SignMutate({
+            userStrID: id,
+            userPhone: phone,
+            userPW: password,
+        })
+    }
+
+    useEffect(() => {
+        console.log(id)
+        console.log(password)
+    }, [id, password])
+
     return (
         <SignContainer>
             <SignWrapper>
+                <Header />
                 <ImageContainer>
                     <Image src={GroupLogo2} />
                 </ImageContainer>
                 <InputContainer>
                     <InputWrapper>
-                        <Label>Name</Label>
-                        <Input></Input>
+                        <Label>phone</Label>
+                        <Input
+                            type="text"
+                            value={phone}
+                            onChange={onChangePhone}
+                        ></Input>
                     </InputWrapper>
                     <InputWrapper>
                         <Label>ID</Label>
-                        <Input></Input>
+                        <Input
+                            type="text"
+                            value={id}
+                            onChange={onChangeId}
+                        ></Input>
                     </InputWrapper>
                     <InputWrapper>
                         <Label>Password</Label>
-                        <Input></Input>
+                        <Input
+                            type="password"
+                            value={password}
+                            onChange={onChangePassword}
+                        ></Input>
                     </InputWrapper>
-                    <ButtonWrapper>
+                    <ButtonWrapper
+                        onClick={
+                            id && password && phone
+                                ? onSignup
+                                : () => toast.error("모두 입력해주세요")
+                        }
+                    >
                         <Button>Sign up</Button>
                     </ButtonWrapper>
+                    <SigninWrapper>
+                        <Span>Are you a member?</Span>
+                        <Link to="/login">
+                            <SignButton>Sign in now</SignButton>
+                        </Link>
+                    </SigninWrapper>
                 </InputContainer>
             </SignWrapper>
         </SignContainer>
@@ -91,5 +141,16 @@ const Button = styled.button`
     color: white;
     border: none;
 `
+
+const SignButton = styled.button`
+    background: transparent;
+    border: none;
+    padding: none;
+    color: #ff7283;
+`
+
+const Span = styled.span``
+
+const SigninWrapper = styled.div``
 
 export default Sign
