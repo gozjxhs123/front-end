@@ -46,7 +46,7 @@ instanceArr.map(instance => {
                             {},
                             {
                                 headers: {
-                                    "Refresh-Token": `Bearer ${beforeRefresh}`,
+                                    "Refresh-Token": `${beforeRefresh}`,
                                 },
                             },
                         )
@@ -56,7 +56,7 @@ instanceArr.map(instance => {
                         Cookies.set("accessToken", access_token)
                         Cookies.set("refreshToken", refresh_token)
                         if (config.headers)
-                            config.headers.Authorization = `Bearer ${access_token}`
+                            config.headers.Authorization = `${access_token}`
 
                         return axios(config)
                     } catch (e) {
