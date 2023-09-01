@@ -7,9 +7,11 @@ import { phoneLoad } from "../apis"
 import Cookies from "js-cookie"
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-hot-toast"
+import ImageConverter from "../hooks/useImage"
 
 const Live = () => {
     const webcamRef = useRef(null)
+    const [formData, setFormData] = useState(null)
     const [url, setURL] = useState("")
     const [img, setImg] = useState("")
     const [value, setValue] = useState(1)
@@ -18,35 +20,42 @@ const Live = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        console.log(log)
-    }, [log])
-
-    useEffect(() => {
         if (!Cookies.get("accessToken")) {
             navigate("/")
         }
     }, [])
 
     const capture = () => {
-        console.log(1)
         setValue(e => e + 1)
         const imgsrc = webcamRef.current.getScreenshot()
-        setImg(imgsrc)
-        convertImageToPng(img)
+        convertImageToPng(imgsrc)
     }
 
-    const convertImageToPng = imageSrc => {
-        const imageDataBlob = dataURItoBlob(imageSrc)
-        const formData = new FormData()
+    const convertImageToPng = async e => {
+        const newformData = new FormData()
+        try {
+            const response = await axios.get(e, {
+                responseType: "blob",
+            })
+            const blob = response.data
 
-        formData.append("file", imageDataBlob)
+            newformData.append("image", blob, "image.jpg")
+        } catch (e) {
+            console.log(e)
+        }
+        console.log(newformData)
         const fetchPhone = () =>
             phoneLoad.get("/record").then(({ data }) => {
                 const fetch = () =>
                     axios
                         .post(
                             `http://localhost:8000/fall?phone=${data.data.userPhone}`,
-                            formData,
+                            newformData,
+                            {
+                                headers: {
+                                    "Content-Type": "multipart/form-data",
+                                },
+                            },
                         )
                         .then(e => {
                             if (e) {
@@ -76,21 +85,8 @@ const Live = () => {
         fetchPhone()
     }
 
-    const dataURItoBlob = dataURI => {
-        const byteString = atob(dataURI.split(",")[1])
-        const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0]
-        const ab = new ArrayBuffer(byteString.length)
-        const ia = new Uint8Array(ab)
-
-        for (let i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i)
-        }
-
-        return new Blob([ab], { type: mimeString })
-    }
-
     useEffect(() => {
-        const capturetick = () => setTimeout(capture, 50000)
+        const capturetick = () => setTimeout(capture, 5000)
         // time : 5000
         const tick = capturetick()
         return () => clearTimeout(tick)
@@ -104,6 +100,7 @@ const Live = () => {
                     <Webcam className="LiveCam" audio={false} ref={webcamRef} />
                 </WebcamSpace>
                 <Right>
+                    <img src={url} />
                     <Box>
                         <Top>
                             <DateLocate>

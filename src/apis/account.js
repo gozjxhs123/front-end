@@ -15,8 +15,7 @@ export const useSignupMutation = () => {
             onError: () => {
                 toast.error("나중에 다시 이용해주세요")
             },
-            onSuccess: res => {
-                console.log(res)
+            onSuccess: () => {
                 navigate("/login")
                 toast.success("회원가입이 완료되었습니다")
             },
@@ -37,7 +36,6 @@ export const useLoginMutation = () => {
                 const { accessToken, refreshToken } = res.data.data
                 Cookies.set("accessToken", accessToken)
                 Cookies.set("refreshToken", refreshToken)
-                console.log(Cookies.get("accessToken"))
                 toast.success("로그인에 성공하였습니다")
                 navigate("/live")
             },

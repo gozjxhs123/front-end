@@ -3,7 +3,6 @@ import FirstSection from "../components/OnBoarding/Section/FirstSection"
 import SecondSection from "../components/OnBoarding/Section/SecondSection"
 import Header from "../components/header/Header"
 import Footer from "../components/footer/Footer"
-import { toast } from "react-hot-toast"
 
 const Main = () => {
     return (
