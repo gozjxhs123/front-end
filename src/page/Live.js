@@ -1,5 +1,5 @@
 import Webcam from "react-webcam"
-import { useCallback, useEffect, useRef, useState, Fragment } from "react"
+import { useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import axios from "axios"
 import Header from "../components/header/Header"
@@ -7,13 +7,9 @@ import { phoneLoad } from "../apis"
 import Cookies from "js-cookie"
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-hot-toast"
-import ImageConverter from "../hooks/useImage"
 
 const Live = () => {
     const webcamRef = useRef(null)
-    const [formData, setFormData] = useState(null)
-    const [url, setURL] = useState("")
-    const [img, setImg] = useState("")
     const [value, setValue] = useState(1)
     const [log, setLog] = useState([])
 
@@ -100,7 +96,6 @@ const Live = () => {
                     <Webcam className="LiveCam" audio={false} ref={webcamRef} />
                 </WebcamSpace>
                 <Right>
-                    <img src={url} />
                     <Box>
                         <Top>
                             <DateLocate>
